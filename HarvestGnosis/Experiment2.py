@@ -203,14 +203,14 @@ def build_baseline_cnn(input_shape, num_classes):
     return model
 
 
-model1 = build_baseline_cnn(X_train.shape[1:], num_classes)
-model1.summary()
+model = build_baseline_cnn(X_train.shape[1:], num_classes)
+model.summary()
 
 callbacks = [
     EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True),
     ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, min_lr=1e-6),
     ModelCheckpoint(
-        filepath=os.path.join(MODEL_DIR, 'model_checkpoint.h5'),
+        filepath=os.path.join(MODEL_DIR, 'model_checkpoint.keras'),
         monitor='val_accuracy',
         save_best_only=True,
         mode='max'
@@ -236,7 +236,7 @@ metrics = evaluate_model(
 
 visualize_predictions(model, X_test, y_test, index_to_class, 'Baseline_CNN')
 
-model.save(os.path.join(MODEL_DIR, 'baseline_cnn.h5'))
+model.save(os.path.join(MODEL_DIR, 'baseline_cnn.keras'))
 
 df_metrics = pd.DataFrame([metrics])
 df_metrics.to_csv(os.path.join(MODEL_DIR, 'model_metrics.csv'), index=False)
@@ -306,6 +306,6 @@ for cls in class_indices.keys():
         if img_files:
             test_img_paths.append(os.path.join(test_dir, random.choice(img_files)))
 
-model_path = os.path.join(MODEL_DIR, 'baseline_cnn.h5')
+model_path = os.path.join(MODEL_DIR, 'baseline_cnn.keras')
 if len(test_img_paths) > 0:
     sample_inference(model_path, test_img_paths[:3], class_indices)
